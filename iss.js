@@ -30,10 +30,35 @@ const fetchMyIP =  (callback) => {
   });
 };
 
+const fetchCoordsByIP  =  (callback) => {
+  const url = 'http://ip-api.com/json/';
+  request(url, (error, response, body) => {
+    if (error) {
+      return callback(`Unable to fetch Latitude, Longitdue: ${error}`, null);
+    }
+
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+
+
+    const data = JSON.parse(body);
+    if (data['lat'] && data['lon']) {
+      return callback(null,  {
+        "latitude" : data['lat'],
+        "longitude": data['lon']
+      });
+    }
+  
+  });
+};
 
 
 
-module.exports = { fetchMyIP };
+
+module.exports = { fetchMyIP, fetchCoordsByIP };
 
 
 
